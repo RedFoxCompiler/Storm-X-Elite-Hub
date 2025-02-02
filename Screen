@@ -1,0 +1,1704 @@
+local StormXElite = {
+    CurrentVersion = "1.0.0",
+    Theme = {
+        Primary = Color3.fromRGB(30, 30, 30),
+        Secondary = Color3.fromRGB(25, 25, 25),
+        Tertiary = Color3.fromRGB(35, 35, 35),
+        Accent = Color3.fromRGB(0, 170, 255),
+        AccentDark = Color3.fromRGB(0, 150, 225),
+        Text = Color3.fromRGB(255, 255, 255),
+        TextDark = Color3.fromRGB(200, 200, 200),
+        TextLight = Color3.fromRGB(230, 230, 230),
+        PlaceholderText = Color3.fromRGB(150, 150, 150),
+        Success = Color3.fromRGB(0, 255, 110),
+        Warning = Color3.fromRGB(255, 185, 0),
+        Error = Color3.fromRGB(255, 0, 68),
+        Overlay = Color3.fromRGB(0, 0, 0),
+        Border = Color3.fromRGB(60, 60, 60),
+        ButtonHover = Color3.fromRGB(45, 45, 45),
+        ButtonActive = Color3.fromRGB(50, 50, 50),
+        InputBackground = Color3.fromRGB(35, 35, 35),
+        ScrollBarBackground = Color3.fromRGB(40, 40, 40),
+        ScrollBarForeground = Color3.fromRGB(60, 60, 60),
+        TabSelected = Color3.fromRGB(40, 40, 40),
+        TabHover = Color3.fromRGB(35, 35, 35),
+        ModalBackground = Color3.fromRGB(25, 25, 25),
+        TooltipBackground = Color3.fromRGB(40, 40, 40),
+        NotificationBackground = Color3.fromRGB(30, 30, 30)
+    },
+    Flags = {},
+    Elements = {},
+    Connections = {},
+    Tabs = {},
+    Windows = {},
+    Settings = {
+        Language = "PT",
+        IsMobile = false,
+        AnimationSpeed = 0.3,
+        EnableSounds = true,
+        EnableTooltips = true,
+        BlurEffect = true,
+        Draggable = true,
+        SaveSettings = true,
+        AutoSaveInterval = 60,
+        MaxNotifications = 5,
+        NotificationDuration = 3,
+        TooltipDelay = 0.5,
+        ScrollSensitivity = 1,
+        MinimumSize = Vector2.new(800, 500),
+        MaximumSize = Vector2.new(1200, 800),
+        DefaultPosition = UDim2.new(0.5, 0, 0.5, 0),
+        DefaultAnchorPoint = Vector2.new(0.5, 0.5),
+        CornerRadius = UDim.new(0, 8),
+        FontFamily = "GothamSSm",
+        DefaultTextSize = 14,
+        HeaderTextSize = 18,
+        TitleTextSize = 24,
+        IconSize = 24,
+        Padding = 10,
+        TabHeight = 40,
+        HeaderHeight = 50,
+        FooterHeight = 40,
+        SidebarWidth = 200,
+        InputHeight = 35,
+        ButtonHeight = 35,
+        DropdownHeight = 35,
+        SliderHeight = 35,
+        SwitchSize = 20,
+        CheckboxSize = 20,
+        RadioSize = 20,
+        ScrollBarWidth = 6,
+        ScrollBarPadding = 2,
+        NotificationWidth = 300,
+        NotificationHeight = 80,
+        TooltipMaxWidth = 200,
+        ModalPadding = 20,
+        AnimationStyles = {
+            Default = {
+                Style = Enum.EasingStyle.Quad,
+                Direction = Enum.EasingDirection.Out
+            },
+            Spring = {
+                Style = Enum.EasingStyle.Spring,
+                Direction = Enum.EasingDirection.Out
+            },
+            Bounce = {
+                Style = Enum.EasingStyle.Bounce,
+                Direction = Enum.EasingDirection.Out
+            },
+            Linear = {
+                Style = Enum.EasingStyle.Linear,
+                Direction = Enum.EasingDirection.Out
+            }
+        },
+        DeviceSpecificSettings = {
+            Mobile = {
+                TouchScrolling = true,
+                SwipeGestures = true,
+                PinchToZoom = true,
+                DoubleTapToClose = true,
+                VibrationFeedback = true,
+                LargerButtons = true,
+                SimplifiedLayout = true,
+                AutoHideNavbar = true,
+                MinimumTouchArea = 44,
+                ScrollbarWidth = 8,
+                DefaultTextSize = 16,
+                HeaderTextSize = 20,
+                TitleTextSize = 26,
+                IconSize = 28,
+                ButtonHeight = 44,
+                InputHeight = 44,
+                TabHeight = 50
+            },
+            Tablet = {
+                TouchScrolling = true,
+                SwipeGestures = true,
+                PinchToZoom = true,
+                SplitView = true,
+                SidebarAlwaysVisible = true,
+                OptimizedLayout = true,
+                MultiColumnSupport = true,
+                DefaultTextSize = 15,
+                HeaderTextSize = 19,
+                TitleTextSize = 25,
+                IconSize = 26,
+                ButtonHeight = 40,
+                InputHeight = 40,
+                TabHeight = 45
+            },
+            Desktop = {
+                HoverEffects = true,
+                ContextMenus = true,
+                KeyboardShortcuts = true,
+                ResizableWindows = true,
+                AdvancedAnimations = true,
+                DetailedTooltips = true,
+                MultiMonitorSupport = true
+            }
+        }
+    }
+}
+
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local CoreGui = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local TextService = game:GetService("TextService")
+local GuiService = game:GetService("GuiService")
+local ContextActionService = game:GetService("ContextActionService")
+local VirtualInputManager = game:GetService("VirtualInputManager")
+local LocalPlayer = Players.LocalPlayer
+local Mouse = LocalPlayer:GetMouse()
+local Camera = workspace.CurrentCamera
+
+local Assets = {
+    WindowPattern = "rbxassetid://2151741365",
+    Gradients = {
+        Vertical = "rbxassetid://4009768244",
+        Horizontal = "rbxassetid://4009902271",
+        Diagonal = "rbxassetid://4009937257",
+        Circular = "rbxassetid://4009989665",
+        RadialIn = "rbxassetid://4019635511",
+        RadialOut = "rbxassetid://4019636864",
+        Wavey = "rbxassetid://4009995490",
+        Scattered = "rbxassetid://4009991075"
+    },
+    Icons = {
+        Paint = "rbxassetid://4400702457",
+        Settings = "rbxassetid://3246691515",
+        Loading = "rbxassetid://4458201547",
+        Close = "rbxassetid://5054663650",
+        Minimize = "rbxassetid://5054663828",
+        Maximize = "rbxassetid://5054663918",
+        Restore = "rbxassetid://5054663999",
+        Search = "rbxassetid://3610254229",
+        Notification = "rbxassetid://4370341699",
+        Warning = "rbxassetid://4370344717",
+        Error = "rbxassetid://4370345144",
+        Success = "rbxassetid://4370343758",
+        Info = "rbxassetid://4370346095",
+        Question = "rbxassetid://4370346707",
+        Logo = "rbxassetid://8834748103",
+        TabBackground = "rbxassetid://2151741365",
+        Shadow = "rbxassetid://5554236805",
+        Circle = "rbxassetid://4560909609",
+        Square = "rbxassetid://4560909957",
+        Triangle = "rbxassetid://4560910269",
+        Check = "rbxassetid://4560909609",
+        ChevronDown = "rbxassetid://4560909957",
+        ChevronUp = "rbxassetid://4560910269",
+        ChevronLeft = "rbxassetid://4560909609",
+        ChevronRight = "rbxassetid://4560909957",
+        Plus = "rbxassetid://4560910269",
+        Minus = "rbxassetid://4560909609",
+        Times = "rbxassetid://4560909957",
+        Bars = "rbxassetid://4560910269",
+        Grid = "rbxassetid://4560909609",
+        List = "rbxassetid://4560909957",
+        Heart = "rbxassetid://4560910269",
+        Star = "rbxassetid://4560909609",
+        Lock = "rbxassetid://4560909957",
+        Unlock = "rbxassetid://4560910269",
+        Cloud = "rbxassetid://4560909609",
+        Download = "rbxassetid://4560909957",
+        Upload = "rbxassetid://4560910269",
+        Refresh = "rbxassetid://4560909609",
+        Camera = "rbxassetid://4560909957",
+        Microphone = "rbxassetid://4560910269",
+        Volume = "rbxassetid://4560909609",
+        Mute = "rbxassetid://4560909957",
+        Play = "rbxassetid://4560910269",
+        Pause = "rbxassetid://4560909609",
+        Stop = "rbxassetid://4560909957",
+        Forward = "rbxassetid://4560910269",
+        Backward = "rbxassetid://4560909609",
+        Power = "rbxassetid://4560909957",
+        Trash = "rbxassetid://4560910269",
+        Save = "rbxassetid://4560909609",
+        Edit = "rbxassetid://4560909957",
+        Calendar = "rbxassetid://4560910269",
+        Clock = "rbxassetid://4560909609",
+        Database = "rbxassetid://4560909957",
+        Folder = "rbxassetid://4560910269",
+        Document = "rbxassetid://4560909609",
+        Picture = "rbxassetid://4560909957",
+        Video = "rbxassetid://4560910269",
+        Music = "rbxassetid://4560909609",
+        Link = "rbxassetid://4560909957",
+        Globe = "rbxassetid://4560910269",
+        Location = "rbxassetid://4560909609",
+        Tag = "rbxassetid://4560909957",
+        Cart = "rbxassetid://4560910269",
+        Money = "rbxassetid://4560909609",
+        Gift = "rbxassetid://4560909957",
+        Phone = "rbxassetid://4560910269",
+        Mail = "rbxassetid://4560909609",
+        Chat = "rbxassetid://4560909957",
+        Share = "rbxassetid://4560910269",
+        Eye = "rbxassetid://4560909609",
+        EyeSlash = "rbxassetid://4560909957",
+        Shield = "rbxassetid://4560910269",
+        Flag = "rbxassetid://4560909609",
+        Bookmark = "rbxassetid://4560909957",
+        Fire = "rbxassetid://4560910269",
+        Leaf = "rbxassetid://4560909609",
+        Lightning = "rbxassetid://4560909957",
+        Droplet = "rbxassetid://4560910269"
+    },
+    Sounds = {
+        Click = "rbxassetid://4429948942",
+        Switch = "rbxassetid://4429949422",
+        Toggle = "rbxassetid://4429949642",
+        Hover = "rbxassetid://4429949815",
+        Success = "rbxassetid://4429950075",
+        Error = "rbxassetid://4429950325",
+        Notification = "rbxassetid://4429950589",
+        Warning = "rbxassetid://4429950783"
+    }
+}
+
+local Languages = {
+    PT = {
+        Themes = "Temas",
+        Settings = "Configurações",
+        Loading = "Carregando...",
+        Welcome = "Bem-vindo ao Storm X Elite",
+        Save = "Salvar",
+        Cancel = "Cancelar",
+        Reset = "Redefinir",
+        Apply = "Aplicar",
+        Search = "Pesquisar...",
+        NoResults = "Nenhum resultado encontrado",
+        Device = "📱 Dispositivo",
+        Language = "Idioma",
+        Animations = "Animações",
+        Interface = "Interface",
+        Sound = "Som",
+        Graphics = "Gráficos",
+        About = "Sobre",
+        Version = "Versão",
+        Credits = "Créditos",
+        Support = "Suporte",
+        Appearance = "Aparência",
+        Performance = "Desempenho",
+        Accessibility = "Acessibilidade",
+        Advanced = "Avançado",
+        Developer = "Desenvolvedor",
+        Experimental = "Experimental",
+        UserInterface = "Interface do Usuário",
+        Customization = "Personalização",
+        ColorScheme = "Esquema de Cores",
+        FontSettings = "Configurações de Fonte",
+        WindowOptions = "Opções de Janela",
+        Notifications = "Notificações",
+        Shortcuts = "Atalhos",
+        BackupRestore = "Backup e Restauração",
+        ImportExport = "Importar/Exportar",
+        ResetSettings = "Redefinir Configurações",
+        ConfirmReset = "Tem certeza que deseja redefinir?",
+        ThemeEditor = "Editor de Temas",
+        CustomThemes = "Temas Personalizados",
+        ThemePresets = "Predefinições de Tema",
+        SaveTheme = "Salvar Tema",
+        LoadTheme = "Carregar Tema",
+        DeleteTheme = "Excluir Tema",
+        ThemeName = "Nome do Tema",
+        InvalidName = "Nome inválido",
+        DuplicateName = "Nome duplicado",
+        Success = "Sucesso",
+        Error = "Erro",
+        Warning = "Aviso",
+        Info = "Informação",
+        Close = "Fechar",
+        Maximize = "Maximizar",
+        Minimize = "Minimizar",
+        Restore = "Restaurar",
+        Loading = "Carregando",
+        Processing = "Processando",
+        Saving = "Salvando",
+        Updating = "Atualizando",
+        Connected = "Conectado",
+        Disconnected = "Desconectado",
+        Enabled = "Ativado",
+        Disabled = "Desativado",
+        On = "Ligado",
+        Off = "Desligado",
+        Yes = "Sim",
+        No = "Não",
+        Ok = "Ok",
+        Done = "Concluído",
+        Next = "Próximo",
+        Previous = "Anterior",
+        First = "Primeiro",
+        Last = "Último",
+        Add = "Adicionar",
+        Remove = "Remover",
+        Edit = "Editar",
+        Delete = "Excluir",
+        Move = "Mover",
+        Copy = "Copiar",
+        Paste = "Colar",
+        Cut = "Recortar",
+        Undo = "Desfazer",
+        Redo = "Refazer",
+        SelectAll = "Selecionar Tudo",
+        DeselectAll = "Desselecionar Tudo",
+        Find = "Encontrar",
+        Replace = "Substituir",
+        ZoomIn = "Aumentar Zoom",
+        ZoomOut = "Diminuir Zoom",
+        ResetZoom = "Redefinir Zoom",
+        FullScreen = "Tela Cheia",
+        ExitFullScreen = "Sair da Tela Cheia",
+        Print = "Imprimir",
+        Properties = "Propriedades",
+        Help = "Ajuda",
+        About = "Sobre",
+        Quit = "Sair",
+        Reload = "Recarregar",
+        Update = "Atualizar",
+        Install = "Instalar",
+        Uninstall = "Desinstalar",
+        Download = "Baixar",
+        Upload = "Enviar",
+        Import = "Importar",
+        Export = "Exportar",
+        Share = "Compartilhar",
+        New = "Novo",
+        Open = "Abrir",
+        Save = "Salvar",
+        SaveAs = "Salvar Como",
+        Print = "Imprimir",
+        Exit = "Sair"
+    },
+    EN = {
+        Themes = "Themes",
+        Settings = "Settings",
+        Loading = "Loading...",
+        Welcome = "Welcome to Storm X Elite",
+        Save = "Save",
+        Cancel = "Cancel",
+        Reset = "Reset",
+        Apply = "Apply",
+        Search = "Search...",
+        NoResults = "No results found",
+        Device = "📱 Device",
+        Language = "Language",
+        Animations = "Animations",
+        Interface = "Interface",
+        Sound = "Sound",
+        Graphics = "Graphics",
+        About = "About",
+        Version = "Version",
+        Credits = "Credits",
+        Support = "Support",
+        Appearance = "Appearance",
+        Performance = "Performance",
+        Accessibility = "Accessibility",
+        Advanced = "Advanced",
+        Developer = "Developer",
+        Experimental = "Experimental",
+        UserInterface = "User Interface",
+        Customization = "Customization",
+        ColorScheme = "Color Scheme",
+        FontSettings = "Font Settings",
+        WindowOptions = "Window Options",
+        Notifications = "Notifications",
+        Shortcuts = "Shortcuts",
+        BackupRestore = "Backup & Restore",
+        ImportExport = "Import/Export",
+        ResetSettings = "Reset Settings",
+        ConfirmReset = "Are you sure you want to reset?",
+        ThemeEditor = "Theme Editor",
+        CustomThemes = "Custom Themes",
+        ThemePresets = "Theme Presets",
+        SaveTheme = "Save Theme",
+        LoadTheme = "Load Theme",
+        DeleteTheme = "Delete Theme",
+        ThemeName = "Theme Name",
+        InvalidName = "Invalid name",
+        DuplicateName = "Duplicate name",
+        Success = "Success",
+        Error = "Error",
+        Warning = "Warning",
+        Info = "Information",
+        Close = "Close",
+        Maximize = "Maximize",
+        Minimize = "Minimize",
+        Restore = "Restore",
+        Loading = "Loading",
+        Processing = "Processing",
+        Saving = "Saving",
+        Updating = "Updating",
+        Connected = "Connected",
+        Disconnected = "Disconnected",
+        Enabled = "Enabled",
+        Disabled = "Disabled",
+        On = "On",
+        Off = "Off",
+        Yes = "Yes",
+        No = "No",
+        Ok = "Ok",
+        Done = "Done",
+        Next = "Next",
+        Previous = "Previous",
+        First = "First",
+        Last = "Last",
+        Add = "Add",
+        Remove = "Remove",
+        Edit = "Edit",
+        Delete = "Delete",
+        Move = "Move",
+        Copy = "Copy",
+        Paste = "Paste",
+        Cut = "Cut",
+        Undo = "Undo",
+        Redo = "Redo",
+        SelectAll = "Select All",
+        DeselectAll = "Deselect All",
+        Find = "Find",
+        Replace = "Replace",
+        ZoomIn = "Zoom In",
+        ZoomOut = "Zoom Out",
+        ResetZoom = "Reset Zoom",
+        FullScreen = "Full Screen",
+        ExitFullScreen = "Exit Full Screen",
+        Print = "Print",
+        Properties = "Properties",
+        Help = "Help",
+        About = "About",
+        Quit = "Quit",
+        Reload = "Reload",
+        Update = "Update",
+        Install = "Install",
+        Uninstall = "Uninstall",
+        Download = "Download",
+        Upload = "Upload",
+        Import = "Import",
+        Export = "Export",
+        Share = "Share",
+        New = "New",
+        Open = "Open",
+        Save = "Save",
+        SaveAs = "Save As",
+        Print = "Print",
+        Exit = "Exit"
+    }
+}
+local Utility = {
+    Connections = {},
+    Cache = {},
+    Debounce = {},
+    DeviceInfo = {
+        IsMobile = UserInputService.TouchEnabled and not UserInputService.MouseEnabled,
+        IsTablet = UserInputService.TouchEnabled and UserInputService.MouseEnabled,
+        IsPC = not UserInputService.TouchEnabled and UserInputService.MouseEnabled,
+        DeviceIcon = (not UserInputService.TouchEnabled and UserInputService.MouseEnabled) and "🖥️" or "📱",
+        ScreenSize = workspace.CurrentCamera.ViewportSize,
+        AspectRatio = workspace.CurrentCamera.ViewportSize.X / workspace.CurrentCamera.ViewportSize.Y,
+        TouchScreen = UserInputService.TouchEnabled,
+        Keyboard = UserInputService.KeyboardEnabled,
+        Mouse = UserInputService.MouseEnabled,
+        Gamepad = UserInputService.GamepadEnabled,
+        Platform = GuiService:GetGameDeviceType(),
+        OS = game:GetService("UserInputService"):GetPlatform(),
+        Renderer = settings().Rendering.QualityLevel,
+        ProcessorCount = settings().Physics.ProcessorCount,
+        MemoryUsage = game:GetService("Stats"):GetTotalMemoryUsageMb(),
+        GraphicsMode = settings().Rendering.GraphicsMode,
+        NetworkLatency = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValue()
+    }
+}
+
+function Utility:Create(class, properties, children)
+    local instance = Instance.new(class)
+    
+    for property, value in pairs(properties or {}) do
+        if property ~= "Parent" then
+            if typeof(value) == "table" and property ~= "Position" and property ~= "Size" and property ~= "UDim2" then
+                instance[property] = value[1]
+                value[1].Changed:Connect(function(newValue)
+                    instance[property] = newValue
+                end)
+            else
+                instance[property] = value
+            end
+        end
+    end
+    
+    if children then
+        for _, child in pairs(children) do
+            child.Parent = instance
+        end
+    end
+    
+    if properties.Parent then
+        instance.Parent = properties.Parent
+    end
+    
+    return instance
+end
+
+function Utility:Tween(instance, properties, duration, style, direction, repeatCount, reverses, delay)
+    local tween = TweenService:Create(
+        instance,
+        TweenInfo.new(
+            duration or StormXElite.Settings.AnimationSpeed,
+            style or StormXElite.Settings.AnimationStyles.Default.Style,
+            direction or StormXElite.Settings.AnimationStyles.Default.Direction,
+            repeatCount or 0,
+            reverses or false,
+            delay or 0
+        ),
+        properties
+    )
+    tween:Play()
+    return tween
+end
+
+function Utility:HandleDeviceSpecifics()
+    if self.DeviceInfo.IsMobile then
+        StormXElite.Settings = table.clone(StormXElite.Settings.DeviceSpecificSettings.Mobile)
+    elseif self.DeviceInfo.IsTablet then
+        StormXElite.Settings = table.clone(StormXElite.Settings.DeviceSpecificSettings.Tablet)
+    else
+        StormXElite.Settings = table.clone(StormXElite.Settings.DeviceSpecificSettings.Desktop)
+    end
+end
+
+function Utility:CreateRippleEffect(parent, startPos)
+    local ripple = self:Create("Frame", {
+        Name = "Ripple",
+        Parent = parent,
+        BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+        BackgroundTransparency = 0.8,
+        Position = UDim2.new(0, startPos.X - parent.AbsolutePosition.X, 0, startPos.Y - parent.AbsolutePosition.Y),
+        Size = UDim2.new(0, 0, 0, 0),
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        BorderSizePixel = 0
+    })
+    
+    local corner = self:Create("UICorner", {
+        Parent = ripple,
+        CornerRadius = UDim.new(1, 0)
+    })
+    
+    local maxSize = math.max(parent.AbsoluteSize.X, parent.AbsoluteSize.Y) * 2
+    local animationTime = 0.5
+    
+    self:Tween(ripple, {Size = UDim2.new(0, maxSize, 0, maxSize), BackgroundTransparency = 1}, animationTime)
+    
+    game:GetService("Debris"):AddItem(ripple, animationTime)
+end
+
+function Utility:CreateShadow(parent, elevation)
+    elevation = elevation or 1
+    local shadowIntensity = math.clamp(elevation * 0.2, 0, 0.5)
+    
+    local shadow = self:Create("ImageLabel", {
+        Name = "Shadow",
+        Parent = parent,
+        BackgroundTransparency = 1,
+        Image = Assets.Icons.Shadow,
+        ImageColor3 = Color3.fromRGB(0, 0, 0),
+        ImageTransparency = 1 - shadowIntensity,
+        Position = UDim2.new(0.5, 0, 0.5, elevation),
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        Size = UDim2.new(1, elevation * 2, 1, elevation * 2),
+        ZIndex = parent.ZIndex - 1
+    })
+    
+    return shadow
+end
+
+function Utility:CreateBlur(parent, intensity)
+    local blur = self:Create("BlurEffect", {
+        Parent = parent,
+        Size = intensity or 10
+    })
+    
+    return blur
+end
+
+function Utility:CreateStroke(parent, properties)
+    local stroke = self:Create("UIStroke", {
+        Parent = parent,
+        ApplyStrokeMode = properties.ApplyStrokeMode or Enum.ApplyStrokeMode.Border,
+        Color = properties.Color or StormXElite.Theme.Border,
+        LineJoinMode = properties.LineJoinMode or Enum.LineJoinMode.Round,
+        Thickness = properties.Thickness or 1,
+        Transparency = properties.Transparency or 0
+    })
+    
+    return stroke
+end
+
+function Utility:CreateGradient(parent, properties)
+    local gradient = self:Create("UIGradient", {
+        Parent = parent,
+        Color = properties.Color or ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 200, 200))
+        }),
+        Rotation = properties.Rotation or 0,
+        Transparency = properties.Transparency or NumberSequence.new(0)
+    })
+    
+    return gradient
+end
+
+function Utility:CreateDragFrame(frame, parent, dragArea)
+    parent = parent or frame
+    dragArea = dragArea or frame
+    
+    local dragging = false
+    local dragInput
+    local dragStart
+    local startPos
+    
+    local function update(input)
+        local delta = input.Position - dragStart
+        local targetPos = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        
+        local tweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+        local tween = TweenService:Create(parent, tweenInfo, {Position = targetPos})
+        tween:Play()
+    end
+    
+    dragArea.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = parent.Position
+            
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+    
+    dragArea.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            update(input)
+        end
+    end)
+end
+
+function Utility:CreateSnackbar(message, type, duration)
+    duration = duration or 3
+    type = type or "Info"
+    
+    local colors = {
+        Success = StormXElite.Theme.Success,
+        Error = StormXElite.Theme.Error,
+        Warning = StormXElite.Theme.Warning,
+        Info = StormXElite.Theme.Accent
+    }
+    
+    local icons = {
+        Success = Assets.Icons.Success,
+        Error = Assets.Icons.Error,
+        Warning = Assets.Icons.Warning,
+        Info = Assets.Icons.Info
+    }
+    
+    local snackbar = self:Create("Frame", {
+        Name = "Snackbar",
+        Parent = CoreGui:FindFirstChild("StormXElite"),
+        BackgroundColor3 = StormXElite.Theme.ModalBackground,
+        Position = UDim2.new(0.5, 0, 1, 20),
+        AnchorPoint = Vector2.new(0.5, 1),
+        Size = UDim2.new(0, 300, 0, 60),
+        BackgroundTransparency = 0.1,
+        BorderSizePixel = 0
+    })
+    
+    local corner = self:Create("UICorner", {
+        Parent = snackbar,
+        CornerRadius = UDim.new(0, 8)
+    })
+    
+    local icon = self:Create("ImageLabel", {
+        Name = "Icon",
+        Parent = snackbar,
+        BackgroundTransparency = 1,
+        Image = icons[type],
+        ImageColor3 = colors[type],
+        Position = UDim2.new(0, 15, 0.5, 0),
+        AnchorPoint = Vector2.new(0, 0.5),
+        Size = UDim2.new(0, 24, 0, 24)
+    })
+    
+    local text = self:Create("TextLabel", {
+        Name = "Message",
+        Parent = snackbar,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 50, 0, 0),
+        Size = UDim2.new(1, -60, 1, 0),
+        Font = Enum.Font.GothamMedium,
+        Text = message,
+        TextColor3 = StormXElite.Theme.Text,
+        TextSize = 14,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        TextWrapped = true
+    })
+    
+    self:CreateShadow(snackbar, 2)
+    
+    self:Tween(snackbar, {Position = UDim2.new(0.5, 0, 1, -20)}, 0.3, Enum.EasingStyle.Back)
+    wait(duration)
+    self:Tween(snackbar, {Position = UDim2.new(0.5, 0, 1, 20)}, 0.3, Enum.EasingStyle.Back)
+    wait(0.3)
+    snackbar:Destroy()
+end
+
+function Utility:CreateTooltip(parent, text, position)
+    position = position or "Top"
+    
+    local tooltip = self:Create("Frame", {
+        Name = "Tooltip",
+        Parent = CoreGui:FindFirstChild("StormXElite"),
+        BackgroundColor3 = StormXElite.Theme.TooltipBackground,
+        BackgroundTransparency = 0.1,
+        BorderSizePixel = 0,
+        Visible = false,
+        ZIndex = 1000
+    })
+    
+    local corner = self:Create("UICorner", {
+        Parent = tooltip,
+        CornerRadius = UDim.new(0, 6)
+    })
+    
+    local label = self:Create("TextLabel", {
+        Name = "Text",
+        Parent = tooltip,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 8, 0, 0),
+        Size = UDim2.new(1, -16, 1, 0),
+        Font = Enum.Font.Gotham,
+        Text = text,
+        TextColor3 = StormXElite.Theme.Text,
+        TextSize = 12,
+        TextWrapped = true
+    })
+    
+    self:CreateShadow(tooltip, 1)
+    
+    local function updateTooltipPosition()
+        local parentPos = parent.AbsolutePosition
+        local parentSize = parent.AbsoluteSize
+        local textSize = TextService:GetTextSize(text, 12, Enum.Font.Gotham, Vector2.new(200, math.huge))
+        local tooltipSize = Vector2.new(math.min(200, textSize.X + 16), textSize.Y + 8)
+        
+        tooltip.Size = UDim2.new(0, tooltipSize.X, 0, tooltipSize.Y)
+        
+        if position == "Top" then
+            tooltip.Position = UDim2.new(0, parentPos.X + (parentSize.X/2) - (tooltipSize.X/2), 0, parentPos.Y - tooltipSize.Y - 5)
+        elseif position == "Bottom" then
+            tooltip.Position = UDim2.new(0, parentPos.X + (parentSize.X/2) - (tooltipSize.X/2), 0, parentPos.Y + parentSize.Y + 5)
+        elseif position == "Left" then
+            tooltip.Position = UDim2.new(0, parentPos.X - tooltipSize.X - 5, 0, parentPos.Y + (parentSize.Y/2) - (tooltipSize.Y/2))
+        elseif position == "Right" then
+            tooltip.Position = UDim2.new(0, parentPos.X + parentSize.X + 5, 0, parentPos.Y + (parentSize.Y/2) - (tooltipSize.Y/2))
+        end
+    end
+    
+    local tooltipDebounce = false
+    local tooltipThread = nil
+    
+    parent.MouseEnter:Connect(function()
+        if tooltipDebounce then return end
+        tooltipDebounce = true
+        
+        tooltipThread = task.delay(StormXElite.Settings.TooltipDelay, function()
+            updateTooltipPosition()
+            tooltip.Visible = true
+            self:Tween(tooltip, {BackgroundTransparency = 0.1}, 0.2)
+        end)
+    end)
+    
+    parent.MouseLeave:Connect(function()
+        tooltipDebounce = false
+        if tooltipThread then task.cancel(tooltipThread) end
+        
+        self:Tween(tooltip, {BackgroundTransparency = 1}, 0.2)
+        wait(0.2)
+        tooltip.Visible = false
+    end)
+    
+    return tooltip
+end
+
+function Utility:CreateNotification(title, message, options)
+    options = options or {}
+    local notificationType = options.type or "Info"
+    local duration = options.duration or 5
+    local position = options.position or "TopRight"
+    local icon = options.icon or Assets.Icons[notificationType]
+    local callback = options.callback
+    
+    local colors = {
+        Success = StormXElite.Theme.Success,
+        Error = StormXElite.Theme.Error,
+        Warning = StormXElite.Theme.Warning,
+        Info = StormXElite.Theme.Accent
+    }
+local Animations = {
+    WindowEffects = {
+        FadeIn = function(frame, duration)
+            frame.BackgroundTransparency = 1
+            for _, obj in pairs(frame:GetDescendants()) do
+                if obj:IsA("Frame") or obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("ImageLabel") or obj:IsA("ImageButton") then
+                    obj.BackgroundTransparency = 1
+                end
+                if obj:IsA("TextLabel") or obj:IsA("TextButton") then
+                    obj.TextTransparency = 1
+                end
+                if obj:IsA("ImageLabel") or obj:IsA("ImageButton") then
+                    obj.ImageTransparency = 1
+                end
+            end
+            
+            Utility:Tween(frame, {BackgroundTransparency = 0}, duration or 0.5)
+            for _, obj in pairs(frame:GetDescendants()) do
+                if obj:IsA("Frame") or obj:IsA("TextLabel") or obj:IsA("TextButton") then
+                    Utility:Tween(obj, {BackgroundTransparency = 0}, duration or 0.5)
+                end
+                if obj:IsA("TextLabel") or obj:IsA("TextButton") then
+                    Utility:Tween(obj, {TextTransparency = 0}, duration or 0.5)
+                end
+                if obj:IsA("ImageLabel") or obj:IsA("ImageButton") then
+                    Utility:Tween(obj, {ImageTransparency = 0}, duration or 0.5)
+                end
+            end
+        end,
+        
+        LoadingSpinner = function(parent)
+            local spinner = Utility:Create("ImageLabel", {
+                Name = "LoadingSpinner",
+                Parent = parent,
+                BackgroundTransparency = 1,
+                Image = Assets.Icons.Loading,
+                Position = UDim2.new(0.5, 0, 0.5, 0),
+                AnchorPoint = Vector2.new(0.5, 0.5),
+                Size = UDim2.new(0, 50, 0, 50)
+            })
+            
+            local rotation = 0
+            local connection
+            
+            connection = RunService.RenderStepped:Connect(function()
+                rotation = rotation + 5
+                spinner.Rotation = rotation
+                
+                if rotation >= 360 then
+                    rotation = 0
+                end
+            end)
+            
+            return {
+                Spinner = spinner,
+                Stop = function()
+                    connection:Disconnect()
+                    spinner:Destroy()
+                end
+            }
+        end,
+        
+        Ripple = function(button, x, y)
+            local ripple = Utility:Create("Frame", {
+                Name = "Ripple",
+                Parent = button,
+                BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+                BackgroundTransparency = 0.8,
+                Position = UDim2.new(0, x - button.AbsolutePosition.X, 0, y - button.AbsolutePosition.Y),
+                AnchorPoint = Vector2.new(0.5, 0.5),
+                BorderSizePixel = 0,
+                Size = UDim2.new(0, 0, 0, 0)
+            })
+            
+            local corner = Utility:Create("UICorner", {
+                Parent = ripple,
+                CornerRadius = UDim.new(1, 0)
+            })
+            
+            local maxSize = math.max(button.AbsoluteSize.X, button.AbsoluteSize.Y) * 2
+            local duration = 0.5
+            
+            Utility:Tween(ripple, {
+                Size = UDim2.new(0, maxSize, 0, maxSize),
+                BackgroundTransparency = 1
+            }, duration)
+            
+            game:GetService("Debris"):AddItem(ripple, duration)
+        end,
+        
+        TabSwitch = function(oldTab, newTab)
+            if oldTab then
+                Utility:Tween(oldTab, {
+                    Position = UDim2.new(1, 0, 0, 0),
+                    BackgroundTransparency = 1
+                }, 0.3)
+                
+                wait(0.3)
+                oldTab.Visible = false
+            end
+            
+            newTab.Position = UDim2.new(-1, 0, 0, 0)
+            newTab.BackgroundTransparency = 1
+            newTab.Visible = true
+            
+            Utility:Tween(newTab, {
+                Position = UDim2.new(0, 0, 0, 0),
+                BackgroundTransparency = 0
+            }, 0.3)
+        end
+    },
+    
+    Create = {
+        Window = function()
+            local window = Utility:Create("Frame", {
+                Name = "Window",
+                Parent = game.CoreGui:WaitForChild("StormXElite"),
+                BackgroundColor3 = StormXElite.Theme.Primary,
+                Position = UDim2.new(0.5, 0, 0.5, 0),
+                AnchorPoint = Vector2.new(0.5, 0.5),
+                Size = UDim2.new(0, 800, 0, 500),
+                ClipsDescendants = true
+            })
+            
+            local corner = Utility:Create("UICorner", {
+                Parent = window,
+                CornerRadius = UDim.new(0, 8)
+            })
+            
+            local shadow = Utility:CreateShadow(window, 2)
+            
+            local titleBar = Utility:Create("Frame", {
+                Name = "TitleBar",
+                Parent = window,
+                BackgroundColor3 = StormXElite.Theme.Secondary,
+                Size = UDim2.new(1, 0, 0, 40)
+            })
+            
+            local titleCorner = Utility:Create("UICorner", {
+                Parent = titleBar,
+                CornerRadius = UDim.new(0, 8)
+            })
+            
+            local title = Utility:Create("TextLabel", {
+                Name = "Title",
+                Parent = titleBar,
+                BackgroundTransparency = 1,
+                Position = UDim2.new(0, 15, 0, 0),
+                Size = UDim2.new(1, -130, 1, 0),
+                Font = Enum.Font.GothamBold,
+                Text = "Storm X Elite",
+                TextColor3 = StormXElite.Theme.Text,
+                TextSize = 18,
+                TextXAlignment = Enum.TextXAlignment.Left
+            })
+            
+            local deviceIcon = Utility:Create("TextLabel", {
+                Name = "DeviceIcon",
+                Parent = titleBar,
+                BackgroundTransparency = 1,
+                Position = UDim2.new(1, -120, 0, 0),
+                Size = UDim2.new(0, 40, 1, 0),
+                Font = Enum.Font.GothamBold,
+                Text = Utility.DeviceInfo.DeviceIcon,
+                TextColor3 = StormXElite.Theme.TextDark,
+                TextSize = 18
+            })
+            
+            local closeButton = Utility:Create("ImageButton", {
+                Name = "CloseButton",
+                Parent = titleBar,
+                BackgroundTransparency = 1,
+                Position = UDim2.new(1, -35, 0.5, 0),
+                AnchorPoint = Vector2.new(0.5, 0.5),
+                Size = UDim2.new(0, 20, 0, 20),
+                Image = Assets.Icons.Close,
+                ImageColor3 = StormXElite.Theme.Text
+            })
+            
+            local minimizeButton = Utility:Create("ImageButton", {
+                Name = "MinimizeButton",
+                Parent = titleBar,
+                BackgroundTransparency = 1,
+                Position = UDim2.new(1, -65, 0.5, 0),
+                AnchorPoint = Vector2.new(0.5, 0.5),
+                Size = UDim2.new(0, 20, 0, 20),
+                Image = Assets.Icons.Minimize,
+                ImageColor3 = StormXElite.Theme.Text
+            })
+            
+            local contentContainer = Utility:Create("Frame", {
+                Name = "ContentContainer",
+                Parent = window,
+                BackgroundTransparency = 1,
+                Position = UDim2.new(0, 0, 0, 40),
+                Size = UDim2.new(1, 0, 1, -40),
+                ClipsDescendants = true
+            })
+            
+            local sidebar = Utility:Create("Frame", {
+                Name = "Sidebar",
+                Parent = contentContainer,
+                BackgroundColor3 = StormXElite.Theme.Secondary,
+                Size = UDim2.new(0, 60, 1, 0)
+            })
+            
+            local sidebarCorner = Utility:Create("UICorner", {
+                Parent = sidebar,
+                CornerRadius = UDim.new(0, 8)
+            })
+            
+            local tabContainer = Utility:Create("Frame", {
+                Name = "TabContainer",
+                Parent = contentContainer,
+                BackgroundTransparency = 1,
+                Position = UDim2.new(0, 60, 0, 0),
+                Size = UDim2.new(1, -60, 1, 0),
+                ClipsDescendants = true
+            })
+            
+            Utility:CreateDragFrame(titleBar, window)
+            
+            closeButton.MouseButton1Click:Connect(function()
+                Animations.WindowEffects.FadeIn(window, 0.3)
+                wait(0.3)
+                window:Destroy()
+            end)
+            
+            local minimized = false
+            minimizeButton.MouseButton1Click:Connect(function()
+                minimized = not minimized
+                if minimized then
+                    Utility:Tween(window, {
+                        Size = UDim2.new(0, 800, 0, 40)
+                    }, 0.3)
+                else
+                    Utility:Tween(window, {
+                        Size = UDim2.new(0, 800, 0, 500)
+                    }, 0.3)
+                end
+            end)
+            
+            return {
+                Window = window,
+                TitleBar = titleBar,
+                ContentContainer = contentContainer,
+                Sidebar = sidebar,
+                TabContainer = tabContainer
+            }
+        end,
+
+        Tab = function(window, name, icon)
+            local tabButton = Utility:Create("Frame", {
+                Name = name .. "Button",
+                Parent = window.Sidebar,
+                BackgroundColor3 = StormXElite.Theme.Primary,
+                BackgroundTransparency = 1,
+                Size = UDim2.new(1, 0, 0, 60)
+            })
+            
+            local tabIcon = Utility:Create("ImageLabel", {
+                Name = "Icon",
+                Parent = tabButton,
+                BackgroundTransparency = 1,
+                Position = UDim2.new(0.5, 0, 0.5, 0),
+                AnchorPoint = Vector2.new(0.5, 0.5),
+                Size = UDim2.new(0, 30, 0, 30),
+                Image = icon,
+                ImageColor3 = StormXElite.Theme.TextDark
+            })
+            
+            local tabContent = Utility:Create("ScrollingFrame", {
+                Name = name .. "Content",
+                Parent = window.TabContainer,
+                BackgroundColor3 = StormXElite.Theme.Primary,
+                BackgroundTransparency = 0,
+                BorderSizePixel = 0,
+                Position = UDim2.new(0, 0, 0, 0),
+                Size = UDim2.new(1, 0, 1, 0),
+                ScrollBarThickness = 2,
+                ScrollBarImageColor3 = StormXElite.Theme.Accent,
+                Visible = false
+            })
+            
+            local contentPadding = Utility:Create("UIPadding", {
+                Parent = tabContent,
+                PaddingLeft = UDim.new(0, 15),
+                PaddingRight = UDim.new(0, 15),
+                PaddingTop = UDim.new(0, 15),
+                PaddingBottom = UDim.new(0, 15)
+            })
+            
+            local contentLayout = Utility:Create("UIListLayout", {
+                Parent = tabContent,
+                SortOrder = Enum.SortOrder.LayoutOrder,
+                Padding = UDim.new(0, 10)
+            })
+            
+            local selectedTab = nil
+            local isSelected = false
+            
+            tabButton.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    if selectedTab ~= tabContent then
+                        if selectedTab then
+                            Animations.WindowEffects.TabSwitch(selectedTab, tabContent)
+                            local oldTab = selectedTab.Parent:FindFirstChild(selectedTab.Name:gsub("Content", "Button"))
+                            Utility:Tween(oldTab, {BackgroundTransparency = 1}, 0.3)
+                            Utility:Tween(oldTab.Icon, {ImageColor3 = StormXElite.Theme.TextDark}, 0.3)
+                        end
+                        
+                        selectedTab = tabContent
+                        Utility:Tween(tabButton, {BackgroundTransparency = 0}, 0.3)
+                        Utility:Tween(tabIcon, {ImageColor3 = StormXElite.Theme.Accent}, 0.3)
+                    end
+                end
+            end)
+            
+            tabButton.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseMovement then
+                    Utility:Tween(tabIcon, {ImageColor3 = StormXElite.Theme.Accent}, 0.2)
+                end
+            end)
+            
+            tabButton.InputEnded:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseMovement then
+                    if selectedTab ~= tabContent then
+                        Utility:Tween(tabIcon, {ImageColor3 = StormXElite.Theme.TextDark}, 0.2)
+                    end
+                end
+            end)
+            
+            return {
+                Button = tabButton,
+                Content = tabContent,
+                Select = function()
+                    tabButton.InputBegan:Fire({UserInputType = Enum.UserInputType.MouseButton1})
+                end
+            }
+        end,
+        
+        Section = function(tab, title)
+            local section = Utility:Create("Frame", {
+                Name = title .. "Section",
+                Parent = tab,
+                BackgroundColor3 = StormXElite.Theme.Secondary,
+                Size = UDim2.new(1, 0, 0, 40),
+                AutomaticSize = Enum.AutomaticSize.Y
+            })
+            
+            local corner = Utility:Create("UICorner", {
+                Parent = section,
+                CornerRadius = UDim.new(0, 8)
+            })
+            
+            local sectionTitle = Utility:Create("TextLabel", {
+                Name = "Title",
+                Parent = section,
+                BackgroundTransparency = 1,
+                Position = UDim2.new(0, 15, 0, 0),
+                Size = UDim2.new(1, -30, 0, 40),
+                Font = Enum.Font.GothamBold,
+                Text = title,
+                TextColor3 = StormXElite.Theme.Text,
+                TextSize = 16,
+                TextXAlignment = Enum.TextXAlignment.Left
+            })
+            
+            local contentContainer = Utility:Create("Frame", {
+                Name = "ContentContainer",
+                Parent = section,
+                BackgroundTransparency = 1,
+                Position = UDim2.new(0, 15, 0, 40),
+                Size = UDim2.new(1, -30, 0, 0),
+                AutomaticSize = Enum.AutomaticSize.Y
+            })
+            
+            local contentLayout = Utility:Create("UIListLayout", {
+                Parent = contentContainer,
+                SortOrder = Enum.SortOrder.LayoutOrder,
+                Padding = UDim.new(0, 10)
+            })
+            
+            return {
+                Section = section,
+                Container = contentContainer
+            }
+        end,
+        
+        Button = function(parent, text, callback)
+            local button = Utility:Create("TextButton", {
+                Name = text .. "Button",
+                Parent = parent,
+                BackgroundColor3 = StormXElite.Theme.Primary,
+                Size = UDim2.new(1, 0, 0, 35),
+                Font = Enum.Font.Gotham,
+                Text = text,
+                TextColor3 = StormXElite.Theme.Text,
+                TextSize = 14,
+                AutoButtonColor = false
+            })
+            
+            local corner = Utility:Create("UICorner", {
+                Parent = button,
+                CornerRadius = UDim.new(0, 6)
+            })
+            
+            button.MouseButton1Click:Connect(function()
+                Animations.WindowEffects.Ripple(button, Mouse.X, Mouse.Y)
+                if callback then
+                    callback()
+                end
+            end)
+            
+            button.MouseEnter:Connect(function()
+                Utility:Tween(button, {BackgroundColor3 = StormXElite.Theme.ButtonHover}, 0.2)
+            end)
+            
+            button.MouseLeave:Connect(function()
+                Utility:Tween(button, {BackgroundColor3 = StormXElite.Theme.Primary}, 0.2)
+            end)
+            
+            return button
+        end,
+        
+        Toggle = function(parent, text, default, callback)
+            local toggle = Utility:Create("Frame", {
+                Name = text .. "Toggle",
+                Parent = parent,
+                BackgroundTransparency = 1,
+                Size = UDim2.new(1, 0, 0, 35)
+            })
+            
+            local title = Utility:Create("TextLabel", {
+                Name = "Title",
+                Parent = toggle,
+                BackgroundTransparency = 1,
+                Position = UDim2.new(0, 0, 0, 0),
+                Size = UDim2.new(1, -50, 1, 0),
+                Font = Enum.Font.Gotham,
+                Text = text,
+                TextColor3 = StormXElite.Theme.Text,
+                TextSize = 14,
+                TextXAlignment = Enum.TextXAlignment.Left
+            })
+            
+            local toggleButton = Utility:Create("Frame", {
+                Name = "ToggleButton",
+                Parent = toggle,
+                BackgroundColor3 = default and StormXElite.Theme.Accent or StormXElite.Theme.Primary,
+                Position = UDim2.new(1, -40, 0.5, 0),
+                AnchorPoint = Vector2.new(0, 0.5),
+                Size = UDim2.new(0, 40, 0, 20)
+            })
+            
+            local corner = Utility:Create("UICorner", {
+                Parent = toggleButton,
+                CornerRadius = UDim.new(1, 0)
+            })
+            
+            local thumb = Utility:Create("Frame", {
+                Name = "Thumb",
+                Parent = toggleButton,
+                BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+                Position = default and UDim2.new(1, -18, 0.5, 0) or UDim2.new(0, 2, 0.5, 0),
+                AnchorPoint = Vector2.new(0, 0.5),
+                Size = UDim2.new(0, 16, 0, 16)
+            })
+            
+            local thumbCorner = Utility:Create("UICorner", {
+                Parent = thumb,
+                CornerRadius = UDim.new(1, 0)
+            })
+            
+            local enabled = default
+            
+            local function toggle()
+                enabled = not enabled
+                
+                Utility:Tween(toggleButton, {
+                    BackgroundColor3 = enabled and StormXElite.Theme.Accent or StormXElite.Theme.Primary
+                }, 0.2)
+                
+                Utility:Tween(thumb, {
+                    Position = enabled and UDim2.new(1, -18, 0.5, 0) or UDim2.new(0, 2, 0.5, 0)
+                }, 0.2)
+                
+                if callback then
+                    callback(enabled)
+                end
+            end
+            
+            toggleButton.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    toggle()
+                end
+            end)
+            
+            return {
+                Toggle = toggle,
+                SetState = function(state)
+                    if state ~= enabled then
+                        toggle()
+                    end
+                end,
+                GetState = function()
+                    return enabled
+                end
+            }
+        end,
+
+Slider = function(parent, text, min, max, default, decimals, callback)
+            local slider = Utility:Create("Frame", {
+                Name = text .. "Slider",
+                Parent = parent,
+                BackgroundTransparency = 1,
+                Size = UDim2.new(1, 0, 0, 50)
+            })
+            
+            local title = Utility:Create("TextLabel", {
+                Name = "Title",
+                Parent = slider,
+                BackgroundTransparency = 1,
+                Size = UDim2.new(1, 0, 0, 20),
+                Font = Enum.Font.Gotham,
+                Text = text,
+                TextColor3 = StormXElite.Theme.Text,
+                TextSize = 14,
+                TextXAlignment = Enum.TextXAlignment.Left
+            })
+            
+            local value = Utility:Create("TextLabel", {
+                Name = "Value",
+                Parent = slider,
+                BackgroundTransparency = 1,
+                Position = UDim2.new(1, -50, 0, 0),
+                Size = UDim2.new(0, 50, 0, 20),
+                Font = Enum.Font.Gotham,
+                Text = tostring(default),
+                TextColor3 = StormXElite.Theme.TextDark,
+                TextSize = 14
+            })
+            
+            local sliderBar = Utility:Create("Frame", {
+                Name = "SliderBar",
+                Parent = slider,
+                BackgroundColor3 = StormXElite.Theme.Primary,
+                Position = UDim2.new(0, 0, 0, 25),
+                Size = UDim2.new(1, 0, 0, 6)
+            })
+            
+            local corner = Utility:Create("UICorner", {
+                Parent = sliderBar,
+                CornerRadius = UDim.new(1, 0)
+            })
+            
+            local fill = Utility:Create("Frame", {
+                Name = "Fill",
+                Parent = sliderBar,
+                BackgroundColor3 = StormXElite.Theme.Accent,
+                Size = UDim2.new((default - min)/(max - min), 0, 1, 0)
+            })
+            
+            local fillCorner = Utility:Create("UICorner", {
+                Parent = fill,
+                CornerRadius = UDim.new(1, 0)
+            })
+            
+            local thumb = Utility:Create("Frame", {
+                Name = "Thumb",
+                Parent = fill,
+                BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+                Position = UDim2.new(1, -4, 0.5, 0),
+                AnchorPoint = Vector2.new(0.5, 0.5),
+                Size = UDim2.new(0, 12, 0, 12)
+            })
+            
+            local thumbCorner = Utility:Create("UICorner", {
+                Parent = thumb,
+                CornerRadius = UDim.new(1, 0)
+            })
+            
+            local dragging = false
+            
+            local function slide(input)
+                local pos = UDim2.new(math.clamp((input.Position.X - sliderBar.AbsolutePosition.X) / sliderBar.AbsoluteSize.X, 0, 1), 0, 1, 0)
+                Utility:Tween(fill, {Size = pos}, 0.1)
+                
+                local value = math.floor((((pos.X.Scale * max) / max) * (max - min) + min) * (10 ^ decimals)) / (10 ^ decimals)
+                slider.Value.Text = tostring(value)
+                
+                if callback then
+                    callback(value)
+                end
+            end
+            
+            sliderBar.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    dragging = true
+                    slide(input)
+                end
+            end)
+            
+            sliderBar.InputEnded:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    dragging = false
+                end
+            end)
+            
+            UserInputService.InputChanged:Connect(function(input)
+                if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+                    slide(input)
+                end
+            end)
+            
+            return {
+                Slider = slider,
+                SetValue = function(value)
+                    value = math.clamp(value, min, max)
+                    local pos = UDim2.new((value - min)/(max - min), 0, 1, 0)
+                    Utility:Tween(fill, {Size = pos}, 0.1)
+                    slider.Value.Text = tostring(value)
+                    
+                    if callback then
+                        callback(value)
+                    end
+                end
+            }
+        end,
+        
+        Dropdown = function(parent, text, options, default, callback)
+            local dropdown = Utility:Create("Frame", {
+                Name = text .. "Dropdown",
+                Parent = parent,
+                BackgroundColor3 = StormXElite.Theme.Primary,
+                ClipsDescendants = true,
+                Size = UDim2.new(1, 0, 0, 35)
+            })
+            
+            local corner = Utility:Create("UICorner", {
+                Parent = dropdown,
+                CornerRadius = UDim.new(0, 6)
+            })
+            
+            local value = Utility:Create("TextLabel", {
+                Name = "Value",
+                Parent = dropdown,
+                BackgroundTransparency = 1,
+                Position = UDim2.new(0, 15, 0, 0),
+                Size = UDim2.new(1, -40, 0, 35),
+                Font = Enum.Font.Gotham,
+                Text = default or text,
+                TextColor3 = default and StormXElite.Theme.Text or StormXElite.Theme.TextDark,
+                TextSize = 14,
+                TextXAlignment = Enum.TextXAlignment.Left
+            })
+            
+            local icon = Utility:Create("ImageLabel", {
+                Name = "Icon",
+                Parent = dropdown,
+                BackgroundTransparency = 1,
+                Position = UDim2.new(1, -30, 0, 5),
+                Size = UDim2.new(0, 25, 0, 25),
+                Image = Assets.Icons.ChevronDown,
+                ImageColor3 = StormXElite.Theme.TextDark
+            })
+            
+            local optionContainer = Utility:Create("Frame", {
+                Name = "OptionContainer",
+                Parent = dropdown,
+                BackgroundTransparency = 1,
+                Position = UDim2.new(0, 0, 0, 35),
+                Size = UDim2.new(1, 0, 0, #options * 30)
+            })
+            
+            local optionLayout = Utility:Create("UIListLayout", {
+                Parent = optionContainer,
+                SortOrder = Enum.SortOrder.LayoutOrder
+            })
+            
+            local opened = false
+            
+            local function createOption(name)
+                local option = Utility:Create("TextButton", {
+                    Name = name .. "Option",
+                    Parent = optionContainer,
+                    BackgroundTransparency = 1,
+                    Size = UDim2.new(1, 0, 0, 30),
+                    Font = Enum.Font.Gotham,
+                    Text = name,
+                    TextColor3 = StormXElite.Theme.TextDark,
+                    TextSize = 14
+                })
+                
+                option.MouseEnter:Connect(function()
+                    Utility:Tween(option, {BackgroundTransparency = 0.8}, 0.2)
+                end)
+                
+                option.MouseLeave:Connect(function()
+                    Utility:Tween(option, {BackgroundTransparency = 1}, 0.2)
+                end)
+                
+                option.MouseButton1Click:Connect(function()
+                    value.Text = name
+                    value.TextColor3 = StormXElite.Theme.Text
+                    
+                    if callback then
+                        callback(name)
+                    end
+                    
+                    Utility:Tween(dropdown, {Size = UDim2.new(1, 0, 0, 35)}, 0.2)
+                    Utility:Tween(icon, {Rotation = 0}, 0.2)
+                    opened = false
+                end)
+            end
+            
+            for _, option in pairs(options) do
+                createOption(option)
+            end
+            
+            dropdown.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    opened = not opened
+                    
+                    Utility:Tween(dropdown, {
+                        Size = opened and UDim2.new(1, 0, 0, 35 + (#options * 30)) or UDim2.new(1, 0, 0, 35)
+                    }, 0.2)
+                    
+                    Utility:Tween(icon, {
+                        Rotation = opened and 180 or 0
+                    }, 0.2)
+                end
+            end)
+            
+            return {
+                Dropdown = dropdown,
+                AddOption = function(option)
+                    table.insert(options, option)
+                    createOption(option)
+                    optionContainer.Size = UDim2.new(1, 0, 0, #options * 30)
+                end,
+                RemoveOption = function(option)
+                    for i, v in pairs(options) do
+                        if v == option then
+                            table.remove(options, i)
+                            optionContainer:FindFirstChild(option .. "Option"):Destroy()
+                            optionContainer.Size = UDim2.new(1, 0, 0, #options * 30)
+                            break
+                        end
+                    end
+                end,
+                SetValue = function(option)
+                    value.Text = option
+                    value.TextColor3 = StormXElite.Theme.Text
+                    
+                    if callback then
+                        callback(option)
+                    end
+                end
+            }
+        end
+    }
+}
+
+local function Initialize()
+    local gui = Utility:Create("ScreenGui", {
+        Name = "StormXElite",
+        Parent = game:GetService("CoreGui"),
+        ResetOnSpawn = false,
+        ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    })
+    
+    local loadingScreen = Utility:Create("Frame", {
+        Name = "LoadingScreen",
+        Parent = gui,
+        BackgroundColor3 = StormXElite.Theme.Primary,
+        Size = UDim2.new(1, 0, 1, 0)
+    })
+    
+    local loadingContainer = Utility:Create("Frame", {
+        Name = "LoadingContainer",
+        Parent = loadingScreen,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0.5, 0, 0.5, 0),
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        Size = UDim2.new(0, 240, 0, 240)
+    })
+    
+    local logo = Utility:Create("ImageLabel", {
+        Name = "Logo",
+        Parent = loadingContainer,
+        BackgroundTransparency = 1,
+        Image = Assets.Icons.Logo,
+        Position = UDim2.new(0.5, 0, 0, 0),
+        AnchorPoint = Vector2.new(0.5, 0),
+        Size = UDim2.new(0, 150, 0, 150)
+    })
+    
+    local title = Utility:Create("TextLabel", {
+        Name = "Title",
+        Parent = loadingContainer,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0.5, 0, 0, 160),
+        AnchorPoint = Vector2.new(0.5, 0),
+        Size = UDim2.new(0, 200, 0, 30),
+        Font = Enum.Font.GothamBold,
+        Text = "Storm X Elite",
+        TextColor3 = StormXElite.Theme.Text,
+        TextSize = 24
+    })
+    
+    local loadingBar = Utility:Create("Frame", {
+        Name = "LoadingBar",
+        Parent = loadingContainer,
+        BackgroundColor3 = StormXElite.Theme.Secondary,
+        Position = UDim2.new(0.5, 0, 1, -30),
+        AnchorPoint = Vector2.new(0.5, 0),
+        Size = UDim2.new(1, 0, 0, 6)
+    })
+    
+    local loadingCorner = Utility:Create("UICorner", {
+        Parent = loadingBar,
+        CornerRadius = UDim.new(1, 0)
+    })
+    
+    local loadingFill = Utility:Create("Frame", {
+        Name = "Fill",
+        Parent = loadingBar,
+        BackgroundColor3 = StormXElite.Theme.Accent,
+        Size = UDim2.new(0, 0, 1, 0)
+    })
+    
+    local fillCorner = Utility:Create("UICorner", {
+        Parent = loadingFill,
+        CornerRadius = UDim.new(1, 0)
+    })
+    
+    Utility:Tween(loadingFill, {Size = UDim2.new(1, 0, 1, 0)}, 1)
+    wait(1.2)
+    
+    Animations.WindowEffects.FadeIn(loadingScreen, 0.3)
+    wait(0.3)
+    loadingScreen:Destroy()
+    
+    return gui
+end
+
+return StormXElite
